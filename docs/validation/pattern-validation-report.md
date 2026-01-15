@@ -140,7 +140,7 @@
 4. Creates clarification request for vague issues
 5. Creates draft PR for clear issues
 
-**Notes**: 
+**Notes**:
 - Workflow only runs from default branch (main)
 - Test issues created to validate logic once merged
 
@@ -163,7 +163,7 @@
 3. Documents confidence thresholds (>80% to flag, >90% to auto-fix)
 4. Documents finding categories (CRITICAL, WARNING, INFO)
 
-**Notes**: 
+**Notes**:
 - This is a conceptual pattern - implementation depends on tooling
 - Reference provides agent prompt templates
 
@@ -221,7 +221,8 @@
 5. Tests cover edge cases (null, empty, dangerous input)
 
 **Local Test Results**:
-```
+
+```text
 tests/unit/test_security.py::TestSanitizeString - 5 tests PASSED
 tests/unit/test_security.py::TestValidateSlug - 7 tests PASSED
 tests/unit/test_security.py::TestSanitizePath - 4 tests PASSED
@@ -278,7 +279,7 @@ tests/unit/test_security.py::TestSanitizePath - 4 tests PASSED
 3. Created exempt labels (pinned, security, bug, help-wanted)
 4. Workflow runs on schedule (daily)
 
-**Notes**: 
+**Notes**:
 - Workflow only runs from default branch
 - Will become active after merge to main
 
@@ -384,6 +385,7 @@ tests/unit/test_security.py::TestSanitizePath - 4 tests PASSED
 ## Files Summary
 
 ### New Files Created
+
 | File | Purpose |
 |------|---------|
 | `.github/scripts/check.sh` | AQE validation script |
@@ -399,6 +401,7 @@ tests/unit/test_security.py::TestSanitizePath - 4 tests PASSED
 | `pytest.ini` | Pytest configuration |
 
 ### Files Modified
+
 | File | Changes |
 |------|---------|
 | `CLAUDE.md` | Added AQE process rule |
