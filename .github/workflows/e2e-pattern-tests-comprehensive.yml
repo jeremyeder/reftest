@@ -1,0 +1,260 @@
+name: Comprehensive E2E Pattern Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_live_tests:
+        description: 'Run live tests that create issues/PRs'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  RUN_LIVE_TESTS: ${{ github.event.inputs.run_live_tests || 'false' }}
+
+jobs:
+  # Static pattern tests (no side effects)
+  pattern-1-aqe:
+    name: Pattern 1 - AQE (Comprehensive)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run AQE comprehensive tests
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-1-aqe-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-1-aqe-comprehensive.sh
+
+  pattern-2-cba:
+    name: Pattern 2 - CBA with Claude
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code || echo "Claude Code install skipped"
+      - name: Run CBA comprehensive tests
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-2-cba-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-2-cba-comprehensive.sh
+
+  pattern-3-dependabot:
+    name: Pattern 3 - Dependabot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install PyYAML
+        run: pip install pyyaml
+      - name: Run Dependabot comprehensive tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-3-dependabot-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-3-dependabot-comprehensive.sh
+
+  pattern-4-gha:
+    name: Pattern 4 - GHA Automation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run GHA comprehensive tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-4-gha-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-4-gha-comprehensive.sh
+
+  pattern-6-multi-agent:
+    name: Pattern 6 - Multi-Agent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Multi-Agent comprehensive tests
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-6-multi-agent-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-6-multi-agent-comprehensive.sh
+
+  pattern-8-security:
+    name: Pattern 8 - Security with Claude Review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pytest
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code || echo "Claude Code install skipped"
+      - name: Run Security comprehensive tests
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-8-security-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-8-security-comprehensive.sh
+
+  pattern-9-self-review:
+    name: Pattern 9 - Self-Review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code || echo "Claude Code install skipped"
+      - name: Run Self-Review comprehensive tests
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-9-self-review-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-9-self-review-comprehensive.sh
+
+  pattern-10-stale:
+    name: Pattern 10 - Stale Management
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Stale comprehensive tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-10-stale-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-10-stale-comprehensive.sh
+
+  pattern-11-testing:
+    name: Pattern 11 - Testing Patterns
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pytest
+      - name: Run Testing comprehensive tests
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-11-testing-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-11-testing-comprehensive.sh
+
+  # Live tests that create real issues/PRs (optional, controlled by input)
+  pattern-5-issue-to-pr-live:
+    name: Pattern 5 - Issue-to-PR (Live)
+    runs-on: ubuntu-latest
+    if: github.event.inputs.run_live_tests == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Issue-to-PR live tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-5-issue-to-pr-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-5-issue-to-pr-comprehensive.sh
+
+  pattern-7-pr-review-live:
+    name: Pattern 7 - PR Review (Live)
+    runs-on: ubuntu-latest
+    if: github.event.inputs.run_live_tests == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run PR Review live tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-7-pr-review-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-7-pr-review-comprehensive.sh
+
+  claude-fix-live:
+    name: Claude Fix Issue (Live)
+    runs-on: ubuntu-latest
+    if: github.event.inputs.run_live_tests == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Claude Fix live tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          chmod +x .github/scripts/e2e-tests/test-pattern-claude-fix-comprehensive.sh
+          .github/scripts/e2e-tests/test-pattern-claude-fix-comprehensive.sh
+
+  summary:
+    name: Comprehensive Test Summary
+    runs-on: ubuntu-latest
+    needs:
+      - pattern-1-aqe
+      - pattern-2-cba
+      - pattern-3-dependabot
+      - pattern-4-gha
+      - pattern-6-multi-agent
+      - pattern-8-security
+      - pattern-9-self-review
+      - pattern-10-stale
+      - pattern-11-testing
+    if: always()
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Comprehensive E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Pattern | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 1. AQE | ${{ needs.pattern-1-aqe.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-1-aqe.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 2. CBA | ${{ needs.pattern-2-cba.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-2-cba.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 3. Dependabot | ${{ needs.pattern-3-dependabot.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-3-dependabot.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 4. GHA | ${{ needs.pattern-4-gha.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-4-gha.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 6. Multi-Agent | ${{ needs.pattern-6-multi-agent.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-6-multi-agent.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 8. Security | ${{ needs.pattern-8-security.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-8-security.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 9. Self-Review | ${{ needs.pattern-9-self-review.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-9-self-review.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 10. Stale | ${{ needs.pattern-10-stale.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-10-stale.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 11. Testing | ${{ needs.pattern-11-testing.result == 'success' && '✅' || '❌' }} ${{ needs.pattern-11-testing.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Count results
+          PASSED=0
+          FAILED=0
+          for result in "${{ needs.pattern-1-aqe.result }}" "${{ needs.pattern-2-cba.result }}" "${{ needs.pattern-3-dependabot.result }}" "${{ needs.pattern-4-gha.result }}" "${{ needs.pattern-6-multi-agent.result }}" "${{ needs.pattern-8-security.result }}" "${{ needs.pattern-9-self-review.result }}" "${{ needs.pattern-10-stale.result }}" "${{ needs.pattern-11-testing.result }}"; do
+            if [[ "$result" == "success" ]]; then
+              PASSED=$((PASSED + 1))
+            else
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          echo "**Total: $PASSED/9 patterns passed**" >> $GITHUB_STEP_SUMMARY
+
+          if [[ $FAILED -gt 0 ]]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ Some tests failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ All tests passed!" >> $GITHUB_STEP_SUMMARY
+          fi
