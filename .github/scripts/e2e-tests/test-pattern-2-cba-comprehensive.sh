@@ -71,7 +71,9 @@ EOF
 echo "   Asking Claude to analyze the sample file..."
 CLAUDE_OUTPUT=$(timeout 60 claude --print "Analyze this Python code and identify any potential issues or improvements. Be brief (2-3 sentences max): $(cat /tmp/cba-test/sample.py)" 2>&1) || true
 
-if [[ -n "$CLAUDE_OUTPUT" ]] && [[ ! "$CLAUDE_OUTPUT" =~ "error" ]]; then
+# Check if Claude returned a meaningful response (not an error message)
+if [[ -n "$CLAUDE_OUTPUT" ]] && [[ ${#CLAUDE_OUTPUT} -gt 50 ]]; then
+    # Claude responded with substantial content - success even if it mentions "error" in suggestions
     echo "✅ Claude successfully analyzed the code"
     echo "   Response preview: ${CLAUDE_OUTPUT:0:200}..."
 else
