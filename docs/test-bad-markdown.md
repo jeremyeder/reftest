@@ -1,15 +1,16 @@
-# Test Bad Markdown
+# Test Fixed Markdown
 
-This file has intentional markdown issues.
+This file now has correct markdown formatting.
 
-##No space after heading marker
+## Proper Heading With Space
 
-- List item
--Missing space after dash
+- List item with proper spacing
+- Another list item
 
 ```python
-print("unclosed code block)
+print("properly closed code block")
+```
 
-## Another heading with trailing spaces
+## Another Heading
 
-[broken link](
+[working link](https://example.com)
